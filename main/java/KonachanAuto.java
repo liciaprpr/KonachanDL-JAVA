@@ -53,8 +53,9 @@ public class KonachanAuto {
             //4.开始下载
             String var = scanner.nextLine();
             int page = 1;
+            List<DownloadThread> threads = null;
             do {
-                List<DownloadThread> threads = new ArrayList();
+                threads = new ArrayList();
                 for (int i = page++ * 10 - 9; i <= page++ * 10 + 10; i++) {
                     String xmlBody = getKonachanXMLFromPageNo(i, tags);
                     Vector<String> imgURLs = getIMGPathByXML(xmlBody);
@@ -67,6 +68,7 @@ public class KonachanAuto {
                     thread.start();
                 }
                 standBy(threads);
+                threads.clear();
                 System.out.println("继续下载请直接回车，否则请输入任意字符或直接结束程序...");
                 var = scanner.nextLine();
             } while (Utils.isBlank(var));
