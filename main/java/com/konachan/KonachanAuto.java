@@ -52,7 +52,7 @@ public class KonachanAuto {
             tags = Utils.isBlank(tags) ? "" : tags.replaceAll(" ", "%20");
 
             //3.输入页码（每页100张 * 10）
-            System.out.println("每次下载1000张，直接下载请回车，否则请输入本地代理端口...");
+            System.out.println("直接下载请回车，否则请输入本地代理端口...");
 
 
             //4.开始下载
@@ -75,9 +75,7 @@ public class KonachanAuto {
                 }
                 standBy(threads);
                 threads.clear();
-                System.out.println("继续下载请直接回车，否则请输入任意字符或直接结束程序...");
-                var = scanner.nextLine();
-            } while (Utils.isBlank(var));
+            } while (true);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -166,7 +164,7 @@ public class KonachanAuto {
                 }
             }
 
-            System.out.println("P:" + p);
+//            System.out.println("P:" + p);
         }
 
         return list;

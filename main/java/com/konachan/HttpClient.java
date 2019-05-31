@@ -52,9 +52,6 @@ public class HttpClient {
             httpPost.setEntity(s);
         }
 
-        System.out.println("请求地址：" + url);
-        System.out.println("请求参数：" + nvps.toString());
-
         if (headers != null) {
             for (String headersKey : headers.keySet()) {
                 httpPost.setHeader(headersKey, headers.get(headersKey));
