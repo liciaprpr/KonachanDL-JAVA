@@ -2,7 +2,9 @@ package com.konachan;
 
 import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -24,19 +26,17 @@ public class HttpClient {
     public static String httpClient(String url, Map<String, String> params, JSONObject jsonObject, String encoding, Map<String, String> headers) throws Exception {
         String body = "";
 
-        //采用绕过验证的方式处理https请求
-//        SSLContext sslcontext = createIgnoreVerifySSL();
-//
-//        // 设置协议http和https对应的处理socket链接工厂的对象
-//        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-//                .register("http", PlainConnectionSocketFactory.INSTANCE)
-//                .register("https", new SSLConnectionSocketFactory(sslcontext))
-//                .build();
-//        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-//        HttpClients.custom().setConnectionManager(connManager);
-//
-//        //设置请求对象
-        CloseableHttpClient client = HttpClients.createDefault();
+        //把代理设置到请求配置
+        CloseableHttpClient client = null;
+        if (Utils.isBlank(KonachanAuto.PROXY_PORT)) {
+            client = HttpClients.createDefault();
+        } else {
+            HttpHost proxy = new HttpHost("127.0.0.1", Integer.parseInt(KonachanAuto.PROXY_PORT), "http");
+            RequestConfig defaultRequestConfig = RequestConfig.custom().setProxy(proxy).build();
+            client = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
+        }
+
+
         HttpPost httpPost = new HttpPost(url);
 
         //装填参数
@@ -61,13 +61,6 @@ public class HttpClient {
             }
         }
 
-//        httpPost.setHeader("Accept", "application/json, text/plain, */*");
-//        httpPost.setHeader("Content-type", "application/json;charset=UTF-8");
-//        httpPost.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
-//        httpPost.setHeader("Referer", "https://bg.creaway.com.cn:11028/tasktracking/");
-//        httpPost.setHeader("Origin", "bg.creaway.com.cn:11028");
-
-
         //执行请求操作，并拿到结果（同步阻塞）
         CloseableHttpResponse response = client.execute(httpPost);
 
@@ -84,10 +77,9 @@ public class HttpClient {
         return body;
     }
 
+
     /**
      * 绕过验证
-     *
-     * @return
      */
     public static SSLContext createIgnoreVerifySSL() throws Exception {
         SSLContext sc = SSLContext.getInstance("SSLv3");

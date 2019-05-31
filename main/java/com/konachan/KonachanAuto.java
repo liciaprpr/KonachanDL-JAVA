@@ -25,6 +25,7 @@ public class KonachanAuto {
     public static String ROOT_URL;
     public static String DEFAULT_URL_WIN = "D:\\KAuto";
     public static String DEFAULT_URL_UNIX = "/Pictures/KAuto";
+    public static String PROXY_PORT = "";
 
 
     public static void main(String[] args) throws Exception {
@@ -51,12 +52,12 @@ public class KonachanAuto {
             tags = Utils.isBlank(tags) ? "" : tags.replaceAll(" ", "%20");
 
             //3.输入页码（每页100张 * 10）
-            System.out.println("每次下载1000张，请保证能访问Konachan，开始下载请直接回车，否则请输入任意字符或直接结束程序...");
+            System.out.println("每次下载1000张，直接下载请回车，否则请输入本地代理端口...");
 
 
             //4.开始下载
-            String var = scanner.nextLine();
-            System.out.println(Utils.isBlank(var));
+            KonachanAuto.PROXY_PORT = scanner.nextLine().trim();
+            String var = "";
             int page = 1;
             List<DownloadThread> threads = null;
             do {
